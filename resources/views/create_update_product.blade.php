@@ -2,8 +2,7 @@
 
 @section('content')
   <div class="card mx-auto" style="width: 30em;">
-    {{-- <img src="https://www.puratos.ch/content/dam/puratos/images/products/no_image_available-product.png" --}}
-    {{-- class="card-image-top" alt="..." /> --}}
+    <x-product-photo :product="isset($product) ? $product : null" />
     <div class="card-body">
       <h5 class="card-title">
         @isset($product)
@@ -14,7 +13,7 @@
       </h5>
 
       <form action={{ isset($product) ? route('product.update', ['id' => $product->id]) : route('product.create') }}
-        method="POST">
+        method="POST" enctype="multipart/form-data">
         @csrf
         @isset($product)
           @method('PATCH')
@@ -33,6 +32,10 @@
 {{ $product->description }}
 @endisset
 </textarea>
+        </div>
+        <div class="mb-3">
+          <label for="photo" class="form-label">Photo:</label>
+          <input class="form-control" type="file" id="photo" name="photo" accept="image/png, image/jpeg">
         </div>
 
         @if ($errors->any())

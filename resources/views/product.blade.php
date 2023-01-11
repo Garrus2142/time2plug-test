@@ -2,8 +2,7 @@
 
 @section('content')
   <div class="card mx-auto" style="width: 30em;">
-    <img src="https://www.puratos.ch/content/dam/puratos/images/products/no_image_available-product.png"
-      class="card-image-top" alt="..." />
+    <x-product-photo :product="$product" />
     <div class="card-body">
       <h5 class="card-title">{{ $product->title }}</h5>
       <p class="card-text">{{ $product->description }}</p>

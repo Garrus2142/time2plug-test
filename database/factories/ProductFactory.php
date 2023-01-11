@@ -19,7 +19,7 @@ class ProductFactory extends Factory
         return [
             'title' => fake()->word(),
             'description' => fake()->sentence(),
-            'photo' => null,
+            'photo_filename' => null,
         ];
     }
 }

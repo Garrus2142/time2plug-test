@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -26,7 +26,13 @@ class ProductController extends Controller
 
     public function delete_product($id)
     {
-        Product::where('id', $id)->delete();
+        $product = Product::findOrFail($id);
+
+        if ($product->photo_filename) {
+            Storage::delete('public/products_photos/' . $product->photo_filename);
+        }
+
+        $product->delete();
 
         return to_route('products.show');
     }
@@ -40,39 +46,27 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        Log::debug($product);
         return view('create_update_product', ['product' => $product]);
     }
 
-    public function create_product(Request $request)
+    public function create_update_product(Request $request, $id = null)
     {
-        $validatedData = $this->validate_product($request);
-
-        $product = new Product;
-        $product->title = $validatedData['title'];
-        $product->description = $validatedData['description'];
-        $product->save();
-
-        return to_route('product.show', $product->id);
-    }
-
-    public function update_product(Request $request, $id)
-    {
-        $validatedData = $this->validate_product($request);
-
-        $product = Product::findOrFail($id);
-        $product->title = $validatedData['title'];
-        $product->description = $validatedData['description'];
-        $product->save();
-
-        return to_route('product.show', $product->id);
-    }
-
-    private function validate_product(Request $request)
-    {
-        return $request->validate([
+        $validatedData = $request->validate([
             'title' => ['required', 'string', 'min:1'],
             'description' => ['required', 'string', 'min:5'],
         ]);
+
+        $product = $id ? Product::findOrFail($id) : new Product;
+        $product->title = $validatedData['title'];
+        $product->description = $validatedData['description'];
+
+        if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+            $path = $request->file('photo')->store('public/products_photos');
+            $product->photo_filename = basename($path);
+        }
+
+        $product->save();
+
+        return to_route('product.show', $product->id);
     }
 }
