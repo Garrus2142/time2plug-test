@@ -14,7 +14,7 @@
         <x-product-photo :product="$product" />
         <div class="card-body">
           <h5 class="card-title">{{ $product->title }}</h5>
-          <p class="card-text">{{ $product->description }}</p>
+          <p class="card-text">{{ Str::limit($product->description, 30) }}</p>
           <a href={{ route('product.show', ['id' => $product->id]) }} class="btn btn-primary">Afficher</a>
         </div>
       </div>

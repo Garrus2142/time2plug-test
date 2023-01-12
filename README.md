@@ -9,7 +9,7 @@
 
 ## Installation
 
--   Run `composer update`
+-   Run `composer install`
 -   Run `php artisan env:decrypt --key {KEY}`
 -   Run `php artisan storage:link --relative`
 
